@@ -15,7 +15,6 @@ exports.post = async ({ appSdk, admin }, req, res) => {
    * Ref.: https://developers.e-com.plus/docs/api/#/store/triggers/
    */
   const trigger = req.body
-  const resourceId = trigger.resource_id || trigger.inserted_id
   appSdk.getAuth(storeId)
     .then((auth) => {
       return getAppData({ appSdk, storeId, auth })
@@ -31,21 +30,36 @@ exports.post = async ({ appSdk, admin }, req, res) => {
           }
 
           /* DO YOUR CUSTOM STUFF HERE */
-          console.log(`> Webhook #${storeId} ${resourceId} [${trigger.resource}]`)
+          let docId, isCart
 
-          /* if (trigger.resource === 'applications') {
-            console.log(resourceId)
-          } else if (trigger.authentication_id !== auth.myId) {
-            switch (trigger.resource) {
-              case 'carts':
-                if (trigger.body) {
-                  console.log(JSON.stringify(trigger.body))
-                }
-                break
-            }
-          } */
+          if (trigger.action !== 'delete') {
+            docId = trigger.resource_id || trigger.inserted_id
+            isCart = resource === 'carts'
+          }
+          console.log(`> Webhook #${storeId} ${docId} [${trigger.resource}]`)
           // nothing to do
-          return {}
+          if (docId && isCart) {
+            const docEndpoint = `carts/${docId}.json`
+            return appSdk.apiRequest(storeId, docEndpoint).then(async ({ response }) => {
+              const doc = response.data
+              let customer
+              if (doc.completed || doc.available === false) {
+                return res.sendStatus(204)
+              }
+              
+              return Promise.all().then(() => {
+                if (!res.headersSent) {
+                  return res.sendStatus(200)
+                }
+              })
+            }).catch(error => {
+              console.error(error)
+              const status = error.response
+                ? error.response.status || 500 : 409
+              return res.sendStatus(status)
+            })
+          }
+          res.sendStatus(204)
         })
         .catch(err => {
       if (err.name === SKIP_TRIGGER_NAME) {
