@@ -34,39 +34,12 @@ exports.post = async ({ appSdk, admin }, req, res) => {
           console.log(`> Webhook #${storeId} ${resourceId} [${trigger.resource}]`)
 
           /* if (trigger.resource === 'applications') {
-            integrationConfig = appData
-            canCreateNew = true
+            console.log(resourceId)
           } else if (trigger.authentication_id !== auth.myId) {
             switch (trigger.resource) {
-              case 'orders':
+              case 'carts':
                 if (trigger.body) {
-                  canCreateNew = appData.new_orders ? undefined : false
-                  integrationConfig = {
-                    _exportation: {
-                      order_ids: [resourceId]
-                    }
-                  }
-                }
-                break
-
-              case 'products':
-                if (trigger.body) {
-                  if (trigger.action === 'create') {
-                    if (!appData.new_products) {
-                      break
-                    }
-                    canCreateNew = true
-                  } else if (
-                    (!trigger.body.price || !appData.export_price) &&
-                    (!trigger.body.quantity || !appData.export_quantity)
-                  ) {
-                    break
-                  }
-                  integrationConfig = {
-                    _exportation: {
-                      product_ids: [resourceId]
-                    }
-                  }
+                  console.log(JSON.stringify(trigger.body))
                 }
                 break
             }
