@@ -34,7 +34,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
           console.log('Deu certo auth')
           if (trigger.action !== 'delete') {
             docId = trigger.resource_id || trigger.inserted_id
-            isCart = resource === 'carts'
+            isCart = trigger.resource === 'carts'
           }
           console.log(`> Webhook #${storeId} ${docId} [${trigger.resource}]`)
           // nothing to do
