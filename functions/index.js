@@ -8,6 +8,7 @@ const recursiveReadDir = require('./lib/recursive-read-dir')
 // Firebase SDKs to setup cloud functions and access Firestore database
 const admin = require('firebase-admin')
 const functions = require('firebase-functions')
+const { CloudTasksClient } = require('@google-cloud/tasks')
 admin.initializeApp()
 
 // web server with Express
