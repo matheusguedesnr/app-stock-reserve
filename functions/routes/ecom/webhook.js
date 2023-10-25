@@ -31,7 +31,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
 
           /* DO YOUR CUSTOM STUFF HERE */
           let docId, isCart
-
+          console.log('Deu certo auth')
           if (trigger.action !== 'delete') {
             docId = trigger.resource_id || trigger.inserted_id
             isCart = resource === 'carts'
@@ -173,6 +173,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
           res.sendStatus(204)
         })
         .catch(err => {
+          console.log('nao consegui acessar app', err)
       if (err.name === SKIP_TRIGGER_NAME) {
         // trigger ignored by app configuration
         res.send(ECHO_SKIP)
