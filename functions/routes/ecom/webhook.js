@@ -1,5 +1,6 @@
 // read configured E-Com Plus app data
 const getAppData = require('./../../lib/store-api/get-app-data')
+const ecomClient = require('@ecomplus/client')
 
 const SKIP_TRIGGER_NAME = 'SkipTrigger'
 const ECHO_SUCCESS = 'SUCCESS'
