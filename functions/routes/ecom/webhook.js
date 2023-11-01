@@ -1,4 +1,5 @@
 // read configured E-Com Plus app data
+const { firestore } = require('firebase-admin')
 const getAppData = require('./../../lib/store-api/get-app-data')
 const ecomClient = require('@ecomplus/client')
 
@@ -44,48 +45,69 @@ exports.post = async ({ appSdk, admin }, req, res) => {
             return appSdk.apiRequest(storeId, docEndpoint).then(async ({ response }) => {
               const doc = response.data
               const { completed } = doc
-              if (completed || doc.available === false) {
-                return res.sendStatus(204)
-              }
               const documentRef = admin.firestore().doc(`cart_reserve/${docId}`)
               const documentSnapshot = await documentRef.get()
-              const { data: { hits } } = await ecomClient.search({
-                storeId,
-                url: '/items.json',
-                method: 'post',
-                data: {
-                  size: doc.items.length,
-                  query: {
-                    bool: {
-                      must: [
-                        { terms: { _id: doc.items.map((item) => item.product_id) } }
-                      ]
-                    }
-                  }
+              const products = []
+              for (let index = 0; index < doc.items.length; index++) {
+                const { data } = await ecomClient.store({ url: `/products/${doc.items[index].product_id}.json`})
+                if (data.result) {
+                  products.push(data.result)
                 }
-              })
+              }
               if (!documentSnapshot.exists) {
                 for (let index = 0; index < doc.items.length; index++) {
                   const item = doc.items[index];
-                  const hitProduct = hits.hits.find(({ _id }) => _id === item.product_id)
+                  const hitProduct = products.find(({ _id }) => _id === item.product_id)
                   if (hitProduct) {
-                    let endpoint = `/products/${item.product_id}`
-                    let quantity
-                    if (hitProduct._source && hitProduct._source.variations && hitProduct._source.variations.length) {
-                      const variation = hitProduct._source.variations.find(({ _id }) => _id === item.variation_id)
-                      endpoint += `/variations/${variation._id}`
-                      endpoint += '/quantity.json' 
+                    let endpoint = `/products/${item.product_id}.json`
+                    let quantity, metafield, metafieldIndex
+                    if (hitProduct.variations && hitProduct.variations.length) {
+                      const variation = hitProduct.variations.find(({ _id }) => _id === item.variation_id)
                       quantity = variation.quantity
+                      metafields = hitProduct.metafields
+                      if (metafields && metafields.length) {
+                        metafieldIndex = metafields.findIndex(field => field.namespace === item.variation_id)
+                        metafield = metafields[metafieldIndex]
+                        quantity = Number(metafield.value) || 0
+                      }
                       quantity -= item.quantity
                       quantity >= 0 ? quantity : quantity = 0
                       console.log(`#${storeId} - ${endpoint} - ${quantity}`)
-                      await appSdk.apiRequest(storeId, endpoint, 'PUT', { quantity }, auth)
+                      if (metafieldIndex >= 0) {
+                        metafields[metafieldIndex].value = String(quantity)
+                      } else {
+                        metafields = [{
+                          _id: item.variation_id,
+                          namespace: item.variation_id,
+                          field: 'quantity',
+                          value: String(quantity)
+                        }]
+                      }
+                      await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields }, auth)
                     } else {
-                      endpoint += '/quantity.json'
-                      quantity = hitProduct._source && hitProduct._source.quantity || 0
+                      quantity = hitProduct && hitProduct.quantity || 0
                       quantity -= item.quantity
                       quantity >= 0 ? quantity : quantity = 0
-                      await appSdk.apiRequest(storeId, endpoint, 'PUT', { quantity }, auth)
+                      metafields = hitProduct.metafields
+                      if (metafields && metafields.length) {
+                        metafieldIndex = metafields.findIndex(field => field.namespace === item.product_id)
+                        metafield = metafields[metafieldIndex]
+                        quantity = Number(metafield.value) || 0
+                      }
+                      quantity -= item.quantity
+                      quantity >= 0 ? quantity : quantity = 0
+                      console.log(`#${storeId} - ${endpoint} - ${quantity}`)
+                      if (metafieldIndex >= 0) {
+                        metafields[metafieldIndex].value = String(quantity)
+                      } else {
+                        metafields = [{
+                          _id: item.product_id,
+                          namespace: item.product_id,
+                          field: 'quantity',
+                          value: String(quantity)
+                        }]
+                      }
+                      await appSdk.apiRequest(storeId, endpoint, 'PUT', { metafields }, auth)
                     }
                   }
                 }
@@ -120,26 +142,57 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                 if (diffItems.length) {
                   for (let index = 0; index < diffItems.length; index++) {
                     const item = diffItems[index];
-                    const hitProduct = hits.hits.find(({ _id }) => _id === item.product_id)
+                    const hitProduct = products.find(({ _id }) => _id === item.product_id)
                     if (hitProduct) {
-                      let endpoint = `/products/${item.product_id}`
+                      let endpoint = `/products/${item.product_id}.json`
                       let quantity
-                      if (hitProduct._source && hitProduct._source.variations && hitProduct._source.variations.length) {
-                        const variation = hitProduct._source.variations.find(({ _id }) => _id === item.variation_id)
-                        endpoint += `/variations/${variation._id}`
-                        endpoint += '/quantity.json' 
+                      if (hitProduct.variations && hitProduct.variations.length) {
+                        const variation = hitProduct.variations.find(({ _id }) => _id === item.variation_id)
                         quantity = variation.quantity
+                        metafields = hitProduct.metafields
+                        if (metafields && metafields.length) {
+                          metafieldIndex = metafields.findIndex(field => field.namespace === item.variation_id)
+                          metafield = metafields[metafieldIndex]
+                          quantity = Number(metafield.value) || 0
+                        }
                         quantity -= item.quantity
                         quantity >= 0 ? quantity : quantity = 0
                         console.log(`#${storeId} - ${endpoint} - ${quantity}`)
-                        await appSdk.apiRequest(storeId, endpoint, 'PUT', { quantity }, auth)
+                        if (metafieldIndex >= 0) {
+                          metafields[metafieldIndex].value = String(quantity)
+                        } else {
+                          metafields = [{
+                            _id: item.variation_id,
+                            namespace: item.variation_id,
+                            field: 'quantity',
+                            value: String(quantity)
+                          }]
+                        }
+                        await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields }, auth)
                       } else {
-                        endpoint += '/quantity.json'
-                        quantity = hitProduct._source && hitProduct._source.quantity || 0
+                        quantity = hitProduct && hitProduct.quantity || 0
+                        quantity -= item.quantity
+                        quantity >= 0 ? quantity : quantity = 0
+                        metafields = hitProduct.metafields
+                        if (metafields && metafields.length) {
+                          metafieldIndex = metafields.findIndex(field => field.namespace === item.product_id)
+                          metafield = metafields[metafieldIndex]
+                          quantity = Number(metafield.value) || 0
+                        }
                         quantity -= item.quantity
                         quantity >= 0 ? quantity : quantity = 0
                         console.log(`#${storeId} - ${endpoint} - ${quantity}`)
-                        await appSdk.apiRequest(storeId, endpoint, 'PUT', { quantity }, auth)
+                        if (metafieldIndex >= 0) {
+                          metafields[metafieldIndex].value = String(quantity)
+                        } else {
+                          metafields = [{
+                            _id: item.product_id,
+                            namespace: item.product_id,
+                            field: 'quantity',
+                            value: String(quantity)
+                          }]
+                        }
+                        await appSdk.apiRequest(storeId, endpoint, 'PUT', { metafields }, auth)
                       }
                     }
                   }
