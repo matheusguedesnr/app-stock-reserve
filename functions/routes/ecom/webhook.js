@@ -89,7 +89,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                           value: String(quantity)
                         }]
                         endpoint = endpoint.replace('.json', '/metafields.json')
-                        await appSdk.apiRequest(storeId, endpoint, 'POST', { metafields }, auth)
+                        await appSdk.apiRequest(storeId, endpoint, 'POST', metafields, auth)
                       }
                     } else {
                       quantity = hitProduct && hitProduct.quantity || 0
@@ -116,7 +116,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                           value: String(quantity)
                         }]
                         endpoint = endpoint.replace('.json', '/metafields.json')
-                        await appSdk.apiRequest(storeId, endpoint, 'POST', { metafields }, auth)
+                        await appSdk.apiRequest(storeId, endpoint, 'POST', metafields, auth)
                       }
                     }
                   }
@@ -181,7 +181,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                             value: String(quantity)
                           }]
                           endpoint = endpoint.replace('.json', '/metafields.json')
-                          await appSdk.apiRequest(storeId, endpoint, 'POST', { metafields }, auth)
+                          await appSdk.apiRequest(storeId, endpoint, 'POST', metafields, auth)
                         }
                       } else {
                         quantity = hitProduct && hitProduct.quantity || 0
@@ -208,7 +208,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                             value: String(quantity)
                           }]
                           endpoint = endpoint.replace('.json', '/metafields.json')
-                          await appSdk.apiRequest(storeId, endpoint, 'POST', { metafields }, auth)
+                          await appSdk.apiRequest(storeId, endpoint, 'POST', metafields, auth)
                         }
                         
                       }
