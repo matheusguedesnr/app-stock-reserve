@@ -122,6 +122,10 @@ const app = {
       // 'GET',           // Read variaton available quantity
       'PUT',           // Set variation stock quantity
     ],
+    'products/metafields': [
+      // 'GET',           // Read variaton available quantity
+      'POST',           // Set variation stock quantity
+    ],
     'products/price': [
       // 'GET',           // Read product current sale price
       // 'PUT',           // Set product sale price
