@@ -50,10 +50,12 @@ exports.post = async ({ appSdk, admin }, req, res) => {
               const products = []
               for (let index = 0; index < doc.items.length; index++) {
                 const { data } = await ecomClient.store({ url: `/products/${doc.items[index].product_id}.json`, authenticationId: auth.myId, accessToken: auth.accessToken, method: 'get', storeId})
+                console.log('retorno produto', JSON.stringify(data))
                 if (data.result) {
                   products.push(data.result)
                 }
               }
+              console.log('produto', JSON.stringify(products))
               if (!documentSnapshot.exists) {
                 for (let index = 0; index < doc.items.length; index++) {
                   const item = doc.items[index];
