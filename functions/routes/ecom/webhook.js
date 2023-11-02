@@ -124,6 +124,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
               } else {
                 const { storeId, items, completed, queuedAt } = documentSnapshot.data()
                 const diffItems = []
+                console.log('itens retornados', JSON.stringify(items))
                 doc.items.forEach(item => {
                   let quantityItem
                   items.forEach(itemDoc => {
@@ -138,6 +139,8 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                     }
                   }) 
                 });
+
+                console.log('Itens diferentes', JSON.stringify(diffItems))
 
                 if (diffItems.length) {
                   for (let index = 0; index < diffItems.length; index++) {
