@@ -77,7 +77,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                       quantity -= item.quantity
                       quantity >= 0 ? quantity : quantity = 0
                       console.log(`#${storeId} - ${endpoint} - ${quantity}`)
-                      if (metafieldIndex >= 0) {
+                      if (metafields && metafields.length && metafieldIndex >= 0) {
                         metafields[metafieldIndex].value = String(quantity)
                       } else {
                         metafields = [{
@@ -101,7 +101,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                       quantity -= item.quantity
                       quantity >= 0 ? quantity : quantity = 0
                       console.log(`#${storeId} - ${endpoint} - ${quantity}`)
-                      if (metafieldIndex >= 0) {
+                      if (metafields && metafields.length && metafieldIndex >= 0) {
                         metafields[metafieldIndex].value = String(quantity)
                       } else {
                         metafields = [{
@@ -163,7 +163,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                         quantity -= item.quantity
                         quantity >= 0 ? quantity : quantity = 0
                         console.log(`#${storeId} - ${endpoint} - ${quantity}`)
-                        if (metafieldIndex >= 0) {
+                        if (metafields && metafields.length && metafieldIndex >= 0) {
                           metafields[metafieldIndex].value = String(quantity)
                         } else {
                           metafields = [{
@@ -187,7 +187,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                         quantity -= item.quantity
                         quantity >= 0 ? quantity : quantity = 0
                         console.log(`#${storeId} - ${endpoint} - ${quantity}`)
-                        if (metafieldIndex >= 0) {
+                        if (metafields && metafields.length && metafieldIndex >= 0) {
                           metafields[metafieldIndex].value = String(quantity)
                         } else {
                           metafields = [{
