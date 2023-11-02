@@ -79,15 +79,16 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                       console.log(`#${storeId} - ${endpoint} - ${quantity}`)
                       if (metafields && metafields.length && metafieldIndex >= 0) {
                         metafields[metafieldIndex].value = String(quantity)
+                        await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields }, auth)
                       } else {
                         metafields = [{
-                          _id: item.variation_id,
                           namespace: item.variation_id,
                           field: 'quantity',
                           value: String(quantity)
                         }]
+                        endpoint = endpoint.replace('.json', '/metafields.json')
+                        await appSdk.apiRequest(storeId, endpoint, 'POST', { metafields }, auth)
                       }
-                      await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields }, auth)
                     } else {
                       quantity = hitProduct && hitProduct.quantity || 0
                       quantity -= item.quantity
@@ -103,15 +104,16 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                       console.log(`#${storeId} - ${endpoint} - ${quantity}`)
                       if (metafields && metafields.length && metafieldIndex >= 0) {
                         metafields[metafieldIndex].value = String(quantity)
+                        await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields }, auth)
                       } else {
                         metafields = [{
-                          _id: item.product_id,
                           namespace: item.product_id,
                           field: 'quantity',
                           value: String(quantity)
                         }]
+                        endpoint = endpoint.replace('.json', '/metafields.json')
+                        await appSdk.apiRequest(storeId, endpoint, 'POST', { metafields }, auth)
                       }
-                      await appSdk.apiRequest(storeId, endpoint, 'PUT', { metafields }, auth)
                     }
                   }
                 }
@@ -165,15 +167,16 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                         console.log(`#${storeId} - ${endpoint} - ${quantity}`)
                         if (metafields && metafields.length && metafieldIndex >= 0) {
                           metafields[metafieldIndex].value = String(quantity)
+                          await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields }, auth)
                         } else {
                           metafields = [{
-                            _id: item.variation_id,
                             namespace: item.variation_id,
                             field: 'quantity',
                             value: String(quantity)
                           }]
+                          endpoint = endpoint.replace('.json', '/metafields.json')
+                          await appSdk.apiRequest(storeId, endpoint, 'POST', { metafields }, auth)
                         }
-                        await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields }, auth)
                       } else {
                         quantity = hitProduct && hitProduct.quantity || 0
                         quantity -= item.quantity
@@ -189,15 +192,17 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                         console.log(`#${storeId} - ${endpoint} - ${quantity}`)
                         if (metafields && metafields.length && metafieldIndex >= 0) {
                           metafields[metafieldIndex].value = String(quantity)
+                          await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields }, auth)
                         } else {
                           metafields = [{
-                            _id: item.product_id,
                             namespace: item.product_id,
                             field: 'quantity',
                             value: String(quantity)
                           }]
+                          endpoint = endpoint.replace('.json', '/metafields.json')
+                          await appSdk.apiRequest(storeId, endpoint, 'POST', { metafields }, auth)
                         }
-                        await appSdk.apiRequest(storeId, endpoint, 'PUT', { metafields }, auth)
+                        
                       }
                     }
                   }
