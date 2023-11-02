@@ -48,11 +48,13 @@ exports.post = async ({ appSdk, admin }, req, res) => {
               const documentRef = admin.firestore().doc(`cart_reserve/${docId}`)
               const documentSnapshot = await documentRef.get()
               const products = []
-              for (let index = 0; index < doc.items.length; index++) {
-                const { data } = await ecomClient.store({ url: `/products/${doc.items[index].product_id}.json`, authenticationId: auth.myId, accessToken: auth.accessToken, method: 'get', storeId})
-                console.log('retorno produto', JSON.stringify(data))
-                if (data.result) {
-                  products.push(data.result)
+              const uniqueProducts = doc.items.filter((obj, index) => {
+                return index === doc.items.findIndex(o => obj.product_id === o.product_id);
+              });
+              for (let index = 0; index < uniqueProducts.length; index++) {
+                const { data } = await ecomClient.store({ url: `/products/${uniqueProducts[index].product_id}.json`, authenticationId: auth.myId, accessToken: auth.accessToken, method: 'get', storeId})
+                if (data) {
+                  products.push(data)
                 }
               }
               console.log('produto', JSON.stringify(products))
@@ -126,7 +128,6 @@ exports.post = async ({ appSdk, admin }, req, res) => {
               } else {
                 const { storeId, items, completed, queuedAt } = documentSnapshot.data()
                 const diffItems = []
-                console.log('itens retornados', JSON.stringify(items))
                 doc.items.forEach(item => {
                   let quantityItem
                   items.forEach(itemDoc => {
@@ -142,14 +143,11 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                   }) 
                 });
 
-                console.log('Itens diferentes', JSON.stringify(diffItems))
-
                 if (diffItems.length) {
                   for (let index = 0; index < diffItems.length; index++) {
                     const item = diffItems[index];
                     const hitProduct = products.find(({ _id }) => _id === item.product_id)
                     console.log('Produto encontrado', JSON.stringify(hitProduct))
-                    console.log('produtos buscados', JSON.stringify(products))
                     if (hitProduct) {
                       let endpoint = `/products/${item.product_id}.json`
                       let quantity
