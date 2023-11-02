@@ -71,8 +71,10 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                       metafields = hitProduct.metafields
                       if (metafields && metafields.length) {
                         metafieldIndex = metafields.findIndex(field => field.namespace === item.variation_id)
-                        metafield = metafields[metafieldIndex]
-                        quantity = Number(metafield.value) || 0
+                        if (metafieldIndex >= 0) {
+                          metafield = metafields[metafieldIndex]
+                          quantity = Number(metafield.value) || 0
+                        }
                       }
                       quantity -= item.quantity
                       quantity >= 0 ? quantity : quantity = 0
@@ -96,8 +98,10 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                       metafields = hitProduct.metafields
                       if (metafields && metafields.length) {
                         metafieldIndex = metafields.findIndex(field => field.namespace === item.product_id)
-                        metafield = metafields[metafieldIndex]
-                        quantity = Number(metafield.value) || 0
+                        if (metafieldIndex >= 0) {
+                          metafield = metafields[metafieldIndex]
+                          quantity = Number(metafield.value) || 0
+                        }
                       }
                       quantity -= item.quantity
                       quantity >= 0 ? quantity : quantity = 0
@@ -159,8 +163,10 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                         metafields = hitProduct.metafields
                         if (metafields && metafields.length) {
                           metafieldIndex = metafields.findIndex(field => field.namespace === item.variation_id)
-                          metafield = metafields[metafieldIndex]
-                          quantity = Number(metafield.value) || 0
+                          if (metafieldIndex >= 0) {
+                            metafield = metafields[metafieldIndex]
+                            quantity = Number(metafield.value) || 0
+                          }
                         }
                         quantity -= item.quantity
                         quantity >= 0 ? quantity : quantity = 0
@@ -184,8 +190,10 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                         metafields = hitProduct.metafields
                         if (metafields && metafields.length) {
                           metafieldIndex = metafields.findIndex(field => field.namespace === item.product_id)
-                          metafield = metafields[metafieldIndex]
-                          quantity = Number(metafield.value) || 0
+                          if (metafieldIndex >= 0) {
+                            metafield = metafields[metafieldIndex]
+                            quantity = Number(metafield.value) || 0
+                          }
                         }
                         quantity -= item.quantity
                         quantity >= 0 ? quantity : quantity = 0
