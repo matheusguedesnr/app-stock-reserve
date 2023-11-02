@@ -49,7 +49,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
               const documentSnapshot = await documentRef.get()
               const products = []
               for (let index = 0; index < doc.items.length; index++) {
-                const { data } = await ecomClient.store({ url: `/products/${doc.items[index].product_id}.json`})
+                const { data } = await ecomClient.store({ url: `/products/${doc.items[index].product_id}.json`, authenticationId: auth.myId, accessToken: auth.accessToken, method: 'get', storeId})
                 if (data.result) {
                   products.push(data.result)
                 }
