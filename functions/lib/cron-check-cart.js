@@ -3,7 +3,9 @@ const { getFirestore } = require('firebase-admin/firestore')
 const ecomClient = require('@ecomplus/client')
 
 module.exports = async ({ appSdk }) => {
-  const d = new Date()
+  appSdk.getAuth(storeId)
+  .then((auth) => {
+    const d = new Date()
   // double checking paid orders after 10 min
   const newDate = new Date(d.getTime() + 600000)
   const db = getFirestore()
@@ -19,12 +21,12 @@ module.exports = async ({ appSdk }) => {
     const cartId = docs[i].ref.id
     try {
       if (completed === false) {
-        await appSdk.apiRequest(storeId, `/carts/${cartId}.json`, 'DELETE')
+        await appSdk.apiRequest(storeId, `/carts/${cartId}.json`, 'DELETE', auth)
       }
     } catch (error) {
       const status = error.response?.status
       if (status > 400 && status < 500) {
-        logger.warn(`failed delete order ${cartId} for #${storeId}`, {
+        logger.warn(`failed delete cart ${cartId} for #${storeId}`, {
           status,
           response: error.response.data
         })
@@ -83,4 +85,5 @@ module.exports = async ({ appSdk }) => {
     }
     await docs[i].ref.delete()
   }
+  }).catch(err => console.error(err))
 }
