@@ -153,11 +153,12 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                 if (diffItems.length) {
                   for (let index = 0; index < diffItems.length; index++) {
                     const item = diffItems[index];
-                    const hitProduct = products.find(({ _id }) => _id === item.product_id)
+                    const indexProduct = products.findIndex(({ _id }) => _id === item.product_id)
                     console.log('Produto encontrado', JSON.stringify(hitProduct))
-                    if (hitProduct) {
+                    if (indexProduct >= 0) {
                       let endpoint = `/products/${item.product_id}.json`
                       let quantity
+                      const hitProduct = products[indexProduct]
                       if (hitProduct.variations && hitProduct.variations.length) {
                         const variation = hitProduct.variations.find(({ _id }) => _id === item.variation_id)
                         quantity = variation.quantity
