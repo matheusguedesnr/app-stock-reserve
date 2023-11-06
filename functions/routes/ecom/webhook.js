@@ -154,7 +154,6 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                   for (let index = 0; index < diffItems.length; index++) {
                     const item = diffItems[index];
                     const indexProduct = products.findIndex(({ _id }) => _id === item.product_id)
-                    console.log('Produto encontrado', JSON.stringify(hitProduct))
                     if (indexProduct >= 0) {
                       let endpoint = `/products/${item.product_id}.json`
                       let quantity
