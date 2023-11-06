@@ -46,6 +46,18 @@ exports.post = async ({ appSdk, admin }, req, res) => {
               const { completed } = doc
               const documentRef = admin.firestore().doc(`cart_reserve/${docId}`)
               const documentSnapshot = await documentRef.get()
+              if (completed) {
+                await documentRef.set({
+                  storeId,
+                  items: doc.items,
+                  completed,
+                  queuedAt: admin.firestore.Timestamp.now()
+                })
+                if (!res.headersSent) {
+                  // done
+                  return res.status(201).send(ECHO_SUCCESS)
+                }
+              }
               const products = []
               const uniqueProducts = doc.items.filter((obj, index) => {
                 return index === doc.items.findIndex(o => obj.product_id === o.product_id);
@@ -56,7 +68,6 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                   products.push(data)
                 }
               }
-              console.log('produto', JSON.stringify(products))
               if (!documentSnapshot.exists) {
                 for (let index = 0; index < doc.items.length; index++) {
                   const item = doc.items[index];
