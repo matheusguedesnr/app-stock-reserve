@@ -93,7 +93,7 @@ const app = {
       // 'POST',          // Create carts
       // 'PATCH',         // Edit carts
       // 'PUT',           // Overwrite carts
-      // 'DELETE',        // Delete carts
+      'DELETE',        // Delete carts
     ],
 
     /**
