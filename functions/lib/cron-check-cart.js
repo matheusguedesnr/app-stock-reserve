@@ -2,11 +2,8 @@ const logger = require('firebase-functions/logger')
 const { getFirestore } = require('firebase-admin/firestore')
 const ecomClient = require('@ecomplus/client')
 
-module.exports = async ({ appSdk }, req, res) => {
-  const { storeId } = req
-  appSdk.getAuth(storeId)
-  .then(async (auth) => {
-    const d = new Date()
+module.exports = async ({ appSdk }) => {
+  const d = new Date()
   // double checking paid orders after 10 min
   const newDate = new Date(d.getTime() + 600000)
   const db = getFirestore()
@@ -16,9 +13,14 @@ module.exports = async ({ appSdk }, req, res) => {
     .get()
   const { docs } = snapshot
   logger.info(`${docs.length} carts`)
-
+  let auth
   for (let i = 0; i < docs.length; i++) {
-    const { completed, items } = docs[i].data()
+    const { storeId, completed, items } = docs[i].data()
+    if (!auth) {
+      appSdk.getAuth(storeId)
+        .then(async (authStore) => {auth = authStore})
+        .catch(error => { console.log('Não autenticou'); console.error(error)})
+    }
     const cartId = docs[i].ref.id
     try {
       if (completed === false) {
@@ -86,5 +88,4 @@ module.exports = async ({ appSdk }, req, res) => {
     }
     await docs[i].ref.delete()
   }
-  }).catch(err => console.error(err))
 }
