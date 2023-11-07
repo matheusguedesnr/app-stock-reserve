@@ -24,7 +24,7 @@ module.exports = async ({ appSdk }) => {
     const cartId = docs[i].ref.id
     try {
       if (completed === false) {
-        await appSdk.apiRequest(storeId, `/carts/${cartId}.json`, 'DELETE', auth)
+        await appSdk.apiRequest(storeId, `/carts/${cartId}.json`, 'PATCH', { available: false }, auth)
       }
     } catch (error) {
       const status = error.response?.status
@@ -49,7 +49,9 @@ module.exports = async ({ appSdk }) => {
             products.push(data)
           }
       }
-      const indexProduct = products.findIndex(({ _id }) => _id === item.product_id)
+      for (let ii = 0; ii < items.length; ii++) {
+        const item = items[ii];
+        const indexProduct = products.findIndex(({ _id }) => _id === item.product_id)
       if (indexProduct >= 0) {
         endpoint = `/products/${item.product_id}.json`
         let quantity, metafield, metafieldIndex
@@ -84,6 +86,8 @@ module.exports = async ({ appSdk }) => {
           }
         }
         await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields: products[indexProduct].metafields }, auth)
+      }
+        
       }
     }
     await docs[i].ref.delete()
