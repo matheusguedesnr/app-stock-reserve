@@ -21,7 +21,7 @@ module.exports = async ({ appSdk }) => {
     const cartId = docs[i].ref.id
     try {
       if (completed === false) {
-        await appSdk.apiRequest(storeId, `/carts/${cartId}.json`, 'DELETE', auth)
+        await appSdk.apiRequest(storeId, `/carts/${cartId}.json`, 'PATCH', { available: false }, auth)
       }
     } catch (error) {
       const status = error.response?.status
