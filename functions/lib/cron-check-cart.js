@@ -2,7 +2,8 @@ const logger = require('firebase-functions/logger')
 const { getFirestore } = require('firebase-admin/firestore')
 const ecomClient = require('@ecomplus/client')
 
-module.exports = async ({ appSdk }) => {
+module.exports = async ({ appSdk }, req, res) => {
+  const { storeId } = req
   appSdk.getAuth(storeId)
   .then(async (auth) => {
     const d = new Date()
@@ -17,7 +18,7 @@ module.exports = async ({ appSdk }) => {
   logger.info(`${docs.length} carts`)
 
   for (let i = 0; i < docs.length; i++) {
-    const { storeId, completed, items } = docs[i].data()
+    const { completed, items } = docs[i].data()
     const cartId = docs[i].ref.id
     try {
       if (completed === false) {
