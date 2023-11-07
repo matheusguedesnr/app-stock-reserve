@@ -4,7 +4,7 @@ const ecomClient = require('@ecomplus/client')
 
 module.exports = async ({ appSdk }) => {
   appSdk.getAuth(storeId)
-  .then((auth) => {
+  .then(async (auth) => {
     const d = new Date()
   // double checking paid orders after 10 min
   const newDate = new Date(d.getTime() + 600000)
