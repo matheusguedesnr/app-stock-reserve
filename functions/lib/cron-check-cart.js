@@ -22,17 +22,6 @@ module.exports = async ({ appSdk }) => {
         .catch(error => { console.log('Não autenticou'); console.error(error)})
     }
     const cartId = docs[i].ref.id
-    try {
-      if (completed === false) {
-        await appSdk.apiRequest(storeId, `/carts/${cartId}.json`, 'DELETE', auth)
-      }
-    } catch (error) {
-      const status = error.response?.status
-      if (status > 400 && status < 500) {
-        console.log('erro status:', status, 'resposta :', error.response.data)
-        logger.warn(`failed edit cart ${cartId} for #${storeId}`)
-      }
-    }
 
     if (Array.isArray(items) && items.length) {
       const uniqueProducts = items.filter((obj, index) => {
