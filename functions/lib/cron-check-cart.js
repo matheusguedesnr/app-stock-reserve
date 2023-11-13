@@ -35,6 +35,7 @@ module.exports = async ({ appSdk }) => {
       for (let ii = 0; ii < items.length; ii++) {
         const item = items[ii];
         const indexProduct = products.findIndex(({ _id }) => _id === item.product_id)
+        console.log('total products', JSON.stringify(products))
         console.log('index encontrado', indexProduct)
       if (indexProduct >= 0) {
         endpoint = `/products/${item.product_id}.json`
