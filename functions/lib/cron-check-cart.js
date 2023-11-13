@@ -16,11 +16,10 @@ module.exports = async ({ appSdk }) => {
   let auth
   for (let i = 0; i < docs.length; i++) {
     const { storeId, completed, items } = docs[i].data()
-    if (!auth) {
-      appSdk.getAuth(storeId)
-        .then(async (authStore) => {auth = authStore})
-        .catch(error => { console.log('Não autenticou'); console.error(error)})
-    }
+    console.log('auth before', storeId)
+    await appSdk.getAuth(storeId)
+      .then(async (authStore) => {auth = authStore})
+      .catch(error => { console.log('Não autenticou'); console.error(error)})
     console.log('autenticacao', auth)
     const cartId = docs[i].ref.id
     console.log('running', cartId)
