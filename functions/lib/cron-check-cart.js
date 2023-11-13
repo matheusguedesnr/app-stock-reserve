@@ -21,6 +21,7 @@ module.exports = async ({ appSdk }) => {
         .then(async (authStore) => {auth = authStore})
         .catch(error => { console.log('Não autenticou'); console.error(error)})
     }
+    console.log('autenticacao', auth)
     const cartId = docs[i].ref.id
     console.log('running', cartId)
     if (Array.isArray(items) && items.length) {
