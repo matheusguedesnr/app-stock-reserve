@@ -28,6 +28,7 @@ module.exports = async ({ appSdk }) => {
         return index === items.findIndex(o => obj.product_id === o.product_id);
       });
       const products = []
+      console.log(auth)
       for (let index = 0; index < uniqueProducts.length; index++) {
         const { data } = await ecomClient.store({ url: `/products/${uniqueProducts[index].product_id}.json`, authenticationId: auth.myId, accessToken: auth.accessToken, method: 'get', storeId})
           if (data) {
