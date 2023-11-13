@@ -35,7 +35,6 @@ module.exports = async ({ appSdk }) => {
       for (let ii = 0; ii < items.length; ii++) {
         const item = items[ii];
         const indexProduct = products.findIndex(({ _id }) => _id === item.product_id)
-        console.log('total products', JSON.stringify(products))
         console.log('index encontrado', indexProduct)
       if (indexProduct >= 0) {
         endpoint = `/products/${item.product_id}.json`
@@ -43,8 +42,6 @@ module.exports = async ({ appSdk }) => {
         const hitProduct = products[indexProduct]
         if (hitProduct.variations && hitProduct.variations.length) {
           const variation = hitProduct.variations.find(({ _id }) => _id === item.variation_id)
-          console.log('produto encontrado', JSON.stringify(hitProduct), item.variation_id)
-          console.log('variacao encontrada', JSON.stringify(variation))
           quantity = variation.quantity
           metafields = hitProduct.metafields
           if (metafields && metafields.length) {
