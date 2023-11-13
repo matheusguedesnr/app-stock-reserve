@@ -16,11 +16,9 @@ module.exports = async ({ appSdk }) => {
   let auth
   for (let i = 0; i < docs.length; i++) {
     const { storeId, completed, items } = docs[i].data()
-    console.log('auth before', storeId)
     await appSdk.getAuth(storeId)
       .then(async (authStore) => {auth = authStore})
       .catch(error => { console.log('Não autenticou'); console.error(error)})
-    console.log('autenticacao', auth)
     const cartId = docs[i].ref.id
     console.log('running', cartId)
     if (Array.isArray(items) && items.length) {
@@ -28,14 +26,12 @@ module.exports = async ({ appSdk }) => {
         return index === items.findIndex(o => obj.product_id === o.product_id);
       });
       const products = []
-      console.log(auth)
       for (let index = 0; index < uniqueProducts.length; index++) {
         const { data } = await ecomClient.store({ url: `/products/${uniqueProducts[index].product_id}.json`, authenticationId: auth.myId, accessToken: auth.accessToken, method: 'get', storeId})
           if (data) {
             products.push(data)
           }
       }
-      console.log('unique products', JSON.stringify(uniqueProducts), products && products.length)
       for (let ii = 0; ii < items.length; ii++) {
         const item = items[ii];
         const indexProduct = products.findIndex(({ _id }) => _id === item.product_id)
@@ -46,6 +42,8 @@ module.exports = async ({ appSdk }) => {
         const hitProduct = products[indexProduct]
         if (hitProduct.variations && hitProduct.variations.length) {
           const variation = hitProduct.variations.find(({ _id }) => _id === item.variation_id)
+          console.log('produto encontrado', JSON.stringify(hitProduct), item.variation_id)
+          console.log('variacao encontrada', JSON.stringify(variation))
           quantity = variation.quantity
           metafields = hitProduct.metafields
           if (metafields && metafields.length) {
