@@ -22,7 +22,7 @@ module.exports = async ({ appSdk }) => {
         .catch(error => { console.log('Não autenticou'); console.error(error)})
     }
     const cartId = docs[i].ref.id
-
+    console.log('running', cartId)
     if (Array.isArray(items) && items.length) {
       const uniqueProducts = items.filter((obj, index) => {
         return index === items.findIndex(o => obj.product_id === o.product_id);
@@ -34,6 +34,7 @@ module.exports = async ({ appSdk }) => {
             products.push(data)
           }
       }
+      console.log('unique products', JSON.stringify(uniqueProducts), products && products.length)
       for (let ii = 0; ii < items.length; ii++) {
         const item = items[ii];
         const indexProduct = products.findIndex(({ _id }) => _id === item.product_id)
@@ -77,5 +78,6 @@ module.exports = async ({ appSdk }) => {
       }
       await docs[i].ref.delete()
     }
+    await docs[i].ref.delete()
   }
 }
