@@ -21,7 +21,7 @@ module.exports = async ({ appSdk }) => {
       .catch(error => { console.log('Não autenticou'); console.error(error)})
     const cartId = docs[i].ref.id
     console.log('running', cartId)
-    if (Array.isArray(items) && items.length) {
+    if (Array.isArray(items) && items.length && !completed) {
       const uniqueProducts = items.filter((obj, index) => {
         return index === items.findIndex(o => obj.product_id === o.product_id);
       });
