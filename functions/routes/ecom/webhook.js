@@ -47,12 +47,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
               const documentRef = admin.firestore().doc(`cart_reserve/${docId}`)
               const documentSnapshot = await documentRef.get()
               if (completed) {
-                await documentRef.set({
-                  storeId,
-                  items: doc.items,
-                  completed,
-                  queuedAt: admin.firestore.Timestamp.now()
-                })
+                await documentRef.delete()
                 if (!res.headersSent) {
                   // done
                   return res.status(201).send(ECHO_SUCCESS)
