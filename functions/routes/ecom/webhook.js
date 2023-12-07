@@ -130,6 +130,7 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                         })
                       }
                     }
+                    console.log('Before patch', JSON.stringify(products[indexProduct].metafields))
                     await appSdk.apiRequest(storeId, endpoint, 'PATCH', { metafields: products[indexProduct].metafields }, auth)
                   }
                 }
