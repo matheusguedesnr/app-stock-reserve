@@ -147,7 +147,7 @@ console.log(`-- Sheduled update E-Com Plus tokens '${cron}'`)
 
 const checkCart = require('./lib/cron-check-cart')
 exports.checkCart = functions.runWith({ timeoutSeconds: 360 })
-  .pubsub.schedule('*/7 * * * *').onRun(() => {
+  .pubsub.schedule('*/4 * * * *').onRun(() => {
     return prepareAppSdk().then(appSdk => {
       checkCart({ appSdk })
     })

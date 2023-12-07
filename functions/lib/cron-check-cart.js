@@ -12,7 +12,7 @@ module.exports = async ({ appSdk }) => {
     .orderBy('queuedAt')
     .get()
   const { docs } = snapshot
-  logger.info(`${docs.length} carts`)
+  logger.info(`has # ${docs.length} carts`)
   let auth
   for (let i = 0; i < docs.length; i++) {
     const { storeId, completed, items } = docs[i].data()
