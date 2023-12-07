@@ -38,7 +38,7 @@ module.exports = async ({ appSdk }) => {
         console.log('index encontrado', indexProduct)
       if (indexProduct >= 0) {
         endpoint = `/products/${item.product_id}.json`
-        let quantity, metafield, metafieldIndex
+        let quantity, metafield, metafields, metafieldIndex
         const hitProduct = products[indexProduct]
         if (hitProduct.variations && hitProduct.variations.length) {
           const variation = hitProduct.variations.find(({ _id }) => _id === item.variation_id)
@@ -50,13 +50,15 @@ module.exports = async ({ appSdk }) => {
               metafield = metafields[metafieldIndex]
               quantity = Number(metafield.value)
               quantity += item.quantity
-              console.log(`#${storeId} - aumentar - ${endpoint} - ${quantity}`)
+              console.log(`#${storeId} - aumentar - ${endpoint} - ${quantity} - ${metafield.value} - ${variation.quantity}`)
+              if (quantity > variation.quantity) {
+                quantity = variation.quantity
+              }
               metafields[metafieldIndex].value = String(quantity)
             }
           }
         } else {
           quantity = hitProduct && hitProduct.quantity || 0
-          quantity += item.quantity
           metafields = hitProduct.metafields
           if (metafields && metafields.length) {
             metafieldIndex = metafields.findIndex(field => field.namespace === item.product_id)
@@ -64,7 +66,10 @@ module.exports = async ({ appSdk }) => {
               metafield = metafields[metafieldIndex]
               quantity = Number(metafield.value)
               quantity += item.quantity
-              console.log(`#${storeId} - ${endpoint} - ${quantity}`)
+              console.log(`#${storeId} - aumentar - ${endpoint} - ${quantity} - ${metafield.value}`)
+              if (quantity > variation.quantity) {
+                quantity = variation.quantity
+              }
               metafields[metafieldIndex].value = String(quantity)
             }
           }

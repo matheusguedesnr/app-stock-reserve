@@ -104,7 +104,6 @@ exports.post = async ({ appSdk, admin }, req, res) => {
                       }
                     } else {
                       quantity = hitProduct && hitProduct.quantity || 0
-                      quantity -= item.quantity
                       quantity >= 0 ? quantity : quantity = 0
                       metafields = hitProduct.metafields
                       if (metafields && metafields.length) {
